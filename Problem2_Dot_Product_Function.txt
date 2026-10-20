@@ -1,0 +1,72 @@
+PROBLEM 2 - QUESTION 3: DOT PRODUCT AS A FUNCTION
+=================================================
+
+The function returns the value itself, so the output parameter ps
+disappears and the call is used inside an expression.
+
+----------------------------------------------------------------------------
+
+Algorithm Orthogonality_Function
+Type
+    Vector = array[1..50] of real
+Var
+    u, w     : Vector
+    nbPairs  : integer
+    dim      : integer
+    k        : integer
+    { the variable "result" is no longer needed }
+
+{ v passed BY REFERENCE, n BY VALUE }
+Procedure read_vector(Var v : Vector ; n : integer)
+Var
+    i : integer
+Begin
+    For i <- 1 to n do
+        Write("component ", i, " : ")
+        Read(v[i])
+    EndFor
+End
+
+{ all parameters passed BY VALUE; result returned by the function }
+Function dot_product(v1, v2 : Vector ; n : integer) : real
+Var
+    i  : integer
+    ps : real
+Begin
+    ps <- 0
+    For i <- 1 to n do
+        ps <- ps + v1[i] * v2[i]
+    EndFor
+    dot_product <- ps          { or: Return ps }
+End
+
+Begin
+    Write("Number of pairs: ")
+    Read(nbPairs)
+
+    For k <- 1 to nbPairs do
+        Write("Dimension of pair ", k, " : ")
+        Read(dim)
+
+        Write("Vector 1:")
+        read_vector(u, dim)
+        Write("Vector 2:")
+        read_vector(w, dim)
+
+        If dot_product(u, w, dim) = 0 then        { function call in the condition }
+            Write("Pair ", k, " : the vectors are orthogonal")
+        Else
+            Write("Pair ", k, " : the vectors are NOT orthogonal")
+        EndIf
+    EndFor
+End.
+
+----------------------------------------------------------------------------
+Procedure vs. Function
+----------------------------------------------------------------------------
+                       | Procedure                          | Function
+-----------------------+------------------------------------+-----------------------------------
+Result returned        | through a Var parameter (ps)       | as the return value
+How it is called       | standalone statement:              | inside an expression:
+                       | dot_product(u, w, dim, result)     | If dot_product(u, w, dim) = 0
+Extra variable needed  | yes (result)                       | no

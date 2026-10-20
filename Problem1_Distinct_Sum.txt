@@ -1,0 +1,79 @@
+PROBLEM 1 - SUM OF DISTINCT ELEMENTS (using arrays)
+====================================================
+
+Statement:
+  Given two sets of elements, find the sum of all elements that are present
+  in only one of the two sets.
+
+Example:
+  Set 1 : [3, 1, 7, 9]
+  Set 2 : [2, 4, 1, 9, 3]
+  Output: 13  (distinct elements 7, 2, 4)
+
+Method:
+  - Initialize sum = 0.
+  - Compare each element of set 1 with set 2; if it is not present, add it to sum.
+  - Do the same in the other direction to add the elements of set 2.
+
+----------------------------------------------------------------------------
+
+Algorithm Distinct_Sum
+Const
+    MAX = 100
+Var
+    A, B    : array[1..MAX] of integer
+    n, m    : integer
+    i, j    : integer
+    sum     : integer
+    found   : boolean
+Begin
+    { Read the two sets }
+    Write("Size of set 1: ")  Read(n)
+    For i <- 1 to n do
+        Read(A[i])
+    EndFor
+    Write("Size of set 2: ")  Read(m)
+    For j <- 1 to m do
+        Read(B[j])
+    EndFor
+
+    sum <- 0
+
+    { Elements of set 1 that are not in set 2 }
+    For i <- 1 to n do
+        found <- false
+        j <- 1
+        While (j <= m) and (not found) do
+            If A[i] = B[j] then
+                found <- true
+            EndIf
+            j <- j + 1
+        EndWhile
+        If not found then
+            sum <- sum + A[i]
+        EndIf
+    EndFor
+
+    { Elements of set 2 that are not in set 1 }
+    For j <- 1 to m do
+        found <- false
+        i <- 1
+        While (i <= n) and (not found) do
+            If B[j] = A[i] then
+                found <- true
+            EndIf
+            i <- i + 1
+        EndWhile
+        If not found then
+            sum <- sum + B[j]
+        EndIf
+    EndFor
+
+    Write("Sum of distinct elements = ", sum)
+End.
+
+----------------------------------------------------------------------------
+
+Trace with the example:
+  First pass : 3, 1 and 9 are found in set 2; 7 is missing   -> sum = 7
+  Second pass: 1, 9 and 3 are found in set 1; 2 and 4 missing -> sum = 7 + 2 + 4 = 13

@@ -1,0 +1,96 @@
+PROBLEM 2 - DOT PRODUCT AND ORTHOGONALITY (procedure version)
+=============================================================
+
+Definition:
+  ps = SUM over i = 1..n of  v1[i] * v2[i]
+  Two vectors are orthogonal if their dot product ps = 0.
+
+Parameter-passing modes used:
+  - v1, v2, n in dot_product : passed BY VALUE      (input, only read)
+  - ps in dot_product        : passed BY REFERENCE  (Var, output result)
+  - v in read_vector         : passed BY REFERENCE  (Var, filled by the procedure)
+  - n in read_vector         : passed BY VALUE
+
+----------------------------------------------------------------------------
+1) The procedure dot_product
+----------------------------------------------------------------------------
+
+Type
+    Vector = array[1..50] of real
+
+Procedure dot_product(v1, v2 : Vector ; n : integer ; Var ps : real)
+Var
+    i : integer
+Begin
+    ps <- 0
+    For i <- 1 to n do
+        ps <- ps + v1[i] * v2[i]
+    EndFor
+End
+
+----------------------------------------------------------------------------
+2) Algorithm testing n pairs of vectors (calls the procedure)
+----------------------------------------------------------------------------
+
+Algorithm Orthogonality_Procedure
+Type
+    Vector = array[1..50] of real
+Var
+    u, w     : Vector
+    nbPairs  : integer      { number of pairs to test }
+    dim      : integer      { dimension of the vectors }
+    k        : integer
+    result   : real
+
+{ Fills a vector: v is passed BY REFERENCE, n BY VALUE }
+Procedure read_vector(Var v : Vector ; n : integer)
+Var
+    i : integer
+Begin
+    For i <- 1 to n do
+        Write("component ", i, " : ")
+        Read(v[i])
+    EndFor
+End
+
+Procedure dot_product(v1, v2 : Vector ; n : integer ; Var ps : real)
+Var
+    i : integer
+Begin
+    ps <- 0
+    For i <- 1 to n do
+        ps <- ps + v1[i] * v2[i]
+    EndFor
+End
+
+Begin
+    Write("Number of pairs: ")
+    Read(nbPairs)
+
+    For k <- 1 to nbPairs do                     { outer loop: pairs }
+        Write("Dimension of pair ", k, " : ")
+        Read(dim)
+
+        Write("Vector 1:")
+        read_vector(u, dim)                      { inner loop inside }
+        Write("Vector 2:")
+        read_vector(w, dim)
+
+        dot_product(u, w, dim, result)           { procedure call }
+
+        If result = 0 then
+            Write("Pair ", k, " : the vectors are orthogonal")
+        Else
+            Write("Pair ", k, " : the vectors are NOT orthogonal (ps = ", result, ")")
+        EndIf
+    EndFor
+End.
+
+----------------------------------------------------------------------------
+Notes
+----------------------------------------------------------------------------
+- Nested loop: the outer "For k" loop over the pairs contains the inner
+  "For i" loops of read_vector and dot_product.
+- Example: u = (1, 2), w = (2, -1) -> 1*2 + 2*(-1) = 0 -> orthogonal.
+- With real numbers, rounding errors may make "= 0" fail; in a real program
+  test |ps| < epsilon (e.g. epsilon = 10^-6) instead.
